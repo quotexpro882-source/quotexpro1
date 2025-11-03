@@ -11,29 +11,30 @@ from telegram.ext import (
     filters,
 )
 
-# ✅ Logging
+# ===============================
+# 🔧 CONFIGURATION
+# ===============================
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s [%(levelname)s] %(message)s'
 )
 logger = logging.getLogger(__name__)
 
-# ✅ Environment variables
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-SOURCE_CHANNEL_ID = int(os.getenv("SOURCE_CHANNEL_ID"))
-TARGET_CHANNEL_ID = int(os.getenv("TARGET_CHANNEL_ID"))
-RENDER_EXTERNAL_URL = "https://quotexpro1.onrender.com"  # e.g., https://yourapp.onrender.com
+SOURCE_CHANNEL_ID = int(os.getenv("SOURCE_CHANNEL_ID", "0"))
+TARGET_CHANNEL_ID = int(os.getenv("TARGET_CHANNEL_ID", "0"))
+RENDER_EXTERNAL_URL = "https://quotexpro1.onrender.com"  # your Render URL
 WEBHOOK_PATH = "/telegram"
 WEBHOOK_URL = f"{RENDER_EXTERNAL_URL}{WEBHOOK_PATH}" if RENDER_EXTERNAL_URL else ""
 
-app = None  # Will hold the Telegram app instance
+app = None  # will hold telegram app instance
 
 
 # ===============================
-# 🔄 HANDLE FORWARDED MESSAGES
+# 🎯 HANDLE FORWARDED OR CHANNEL MESSAGES
 # ===============================
 async def handle_forward(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    msg = update.message
+    msg = update.channel_post or update.message
     if not msg or not msg.text:
         return
 
@@ -49,7 +50,6 @@ async def handle_forward(update: Update, context: ContextTypes.DEFAULT_TYPE):
             time = "N/A"
             direction = "N/A"
 
-            # Extract values
             for line in lines:
                 if "💳" in line:
                     asset = line.replace("💳", "").strip()
@@ -63,7 +63,7 @@ async def handle_forward(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         direction = "🔴 DOWN 🔴"
 
             formatted_signal = (
-                f"🚀 𝗢𝗻𝗲 𝗠𝗶𝗻𝘂𝘁𝗲 𝗧𝗿𝗮𝗱𝗲 ( 𝟭 𝗠𝗜𝗡𝗧 ) 🚀\n\n"
+                f"🚀 𝗢𝗻𝗲 𝗠𝗶𝗻𝘂𝘁𝗲 𝗧𝗿𝗮𝗱𝗲 (𝟭 𝗠𝗜𝗡𝗧) 🚀\n\n"
                 f"🀄 {asset}\n"
                 f"⚡️ 𝐓𝐈𝐌𝐄 𝐙𝐎𝐍𝐄 𝐔𝐓𝐂 +𝟓:𝟑𝟎\n"
                 f"⌚ {time} ENTRY TIME\n"
@@ -126,7 +126,7 @@ async def handle_forward(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 )
             elif "LOSS" in caption_text:
                 final_caption = (
-                    f"{result_msg}\n"
+                    f"💔 LOSS\n"
                     f"Relax bro 😎\n"
                     f"Next trade me plan ke sath recover kar lenge 💪"
                 )
@@ -144,8 +144,9 @@ async def handle_forward(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
 
-
-# ✅ Webhook update receiver
+# ===============================
+# 🌐 AIOHTTP HANDLERS
+# ===============================
 async def handle_telegram_webhook(request):
     try:
         data = await request.json()
@@ -156,12 +157,13 @@ async def handle_telegram_webhook(request):
     return web.Response(text="OK")
 
 
-# ✅ Health check endpoint
 async def handle_health(request):
     return web.Response(text="Bot is alive! 🚀")
 
 
-# ✅ Periodic ping to keep Render alive
+# ===============================
+# 🔄 KEEP-ALIVE PING (RENDER)
+# ===============================
 async def periodic_ping(url: str, interval: int = 30):
     import aiohttp
     while True:
@@ -174,7 +176,9 @@ async def periodic_ping(url: str, interval: int = 30):
         await asyncio.sleep(interval)
 
 
-# ✅ Start aiohttp web server
+# ===============================
+# 🚀 START WEB SERVER
+# ===============================
 async def run_web_server():
     port = int(os.environ.get('PORT', 10000))
     web_app = web.Application()
@@ -188,12 +192,15 @@ async def run_web_server():
     logger.info(f"Web server running on port {port}")
 
 
-# ✅ Main function
+# ===============================
+# 🧠 MAIN
+# ===============================
 async def main():
     global app
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
-    app.add_handler(MessageHandler(filters.UpdateType.CHANNEL_POST, copy_channel_post))
+    # Handle channel or forwarded posts
+    app.add_handler(MessageHandler(filters.ALL, handle_forward))
 
     logger.info("Initializing and setting webhook...")
     await app.initialize()
@@ -212,7 +219,9 @@ async def main():
     await app.shutdown()
 
 
-# ✅ Entry point
+# ===============================
+# 🏁 ENTRY POINT
+# ===============================
 if __name__ == "__main__":
     if sys.platform.startswith("win") and sys.version_info[:2] >= (3, 8):
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
