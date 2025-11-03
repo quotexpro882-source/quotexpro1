@@ -82,6 +82,7 @@ async def handle_forward(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 chat_id=TARGET_CHANNEL_ID,
                 text=formatted_signal,
                 parse_mode='HTML'
+                disable_web_page_preview=True   # 👈 This hides the Qxbroker preview
             )
             return
 
@@ -236,6 +237,7 @@ if __name__ == "__main__":
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
     asyncio.run(main())
+
 
 
 
