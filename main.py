@@ -63,19 +63,19 @@ async def handle_forward(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         direction = "🔴 DOWN 🔴"
 
             formatted_signal = (
-                f"🚀 <u>𝗢𝗻𝗲 𝗠𝗶𝗻𝘂𝘁𝗲 𝗧𝗿𝗮𝗱𝗲 (𝟭 𝗠𝗜𝗡𝗧)<u> 🚀\n\n"
-                f"🀄 <u>{asset}<u>\n"
-                f"⚡️ <u>𝐓𝐈𝐌𝐄 𝐙𝐎𝐍𝐄 𝐔𝐓𝐂 +𝟓:𝟑𝟎<u>\n"
-                f"⌚ {time} <u>ENTRY TIME<u>\n"
-                f"<u>{direction}<u>\n\n"
-                f"💎 𝗣𝗿𝗲𝗺𝗶𝘂𝗺 𝗦𝗶𝗴𝗻𝗮𝗹 💎\n"
-                f"━━━━━━━━━━━━━━━\n"
-                f"💎 <u><b>OFFICIAL REGISTRATION LINK<u><b> 👇\n"
-                f"👉 <u>https://broker-qx.pro/sign-up/?lid=1200739<u>\n\n"
-                f"🎁 <u><b>USE CODE:<u><b> Masterguru\n"
-                f"💥 <u><b>GET INSTANT 50% BONUS ON FIRST DEPOSIT!<u><b>\n"
-                f"<i>(Valid only via this official link)<i>\n"
-                f"━━━━━━━━━━━━━━━"
+    f"🚀 <u><b>𝗢𝗻𝗲 𝗠𝗶𝗻𝘂𝘁𝗲 𝗧𝗿𝗮𝗱𝗲 (𝟭 𝗠𝗜𝗡𝗧)</b></u> 🚀\n\n"
+    f"🀄 <u>{asset}</u>\n"
+    f"⚡️ <u>𝐓𝐈𝐌𝐄 𝐙𝐎𝐍𝐄 𝐔𝐓𝐂 +𝟓:𝟑𝟎</u>\n"
+    f"⌚ <u>{time} ENTRY TIME</u>\n"
+    f"<u>{direction}</u>\n\n"
+    f"💎 𝗣𝗿𝗲𝗺𝗶𝘂𝗺 𝗦𝗶𝗴𝗻𝗮𝗹 💎\n"
+    f"━━━━━━━━━━━━━━━\n"
+    f"💎 <u><b>OFFICIAL REGISTRATION LINK</b></u> 👇\n"
+    f"👉 <u>https://broker-qx.pro/sign-up/?lid=1200739</u>\n\n"
+    f"🎁 <u><b>USE CODE:</b></u> Masterguru\n"
+    f"💥 <u><b>GET INSTANT 50% BONUS ON FIRST DEPOSIT!</b></u>\n"
+    f"<i>(Valid only via this official link)</i>\n"
+    f"━━━━━━━━━━━━━━━"
             )
 
             await context.bot.send_message(
@@ -115,25 +115,25 @@ async def handle_forward(update: Update, context: ContextTypes.DEFAULT_TYPE):
             # Custom message for WIN ✅² treated as LOSS
             if "WIN ✅²" in text_upper:
                 final_caption = (
-                    f"💔 LOSS\n"
-                    f"<b><u>Relax bro<b><u> 😎\n"
-                    f"<b><u><i>Next trade me plan ke sath recover kar lenge<b><u><i> 💪"
+    "💔 LOSS\n"
+    "<b><u>Relax bro</u></b> 😎\n"
+    "<b><u><i>Next trade me plan ke sath recover kar lenge</i></u></b> 💪"
                 )
 
             # Consecutive loss message
             elif "LOSS" in text_upper and ("CONSEC" in text_upper or "2 LOSS" in text_upper):
                 final_caption = (
                     f"💔 LOSS\n"
-                    f"Don’t panic, bounce back stronger 💪\n"
-                    f"One loss can’t stop a future winner🔥"
+                    f"Don’t panic, <b><u>bounce back stronger</u></b> 💪\n"
+                    f"One loss can’t stop a <b><u>future winner</u></b>🔥"
                 )
 
             # Normal loss message
             elif "LOSS" in text_upper or "💔 LOSS" in text_upper:
                 final_caption = (
-                    f"💔 LOSS\n"
-                    f"<b><u>Relax bro<b><u> 😎\n"
-                    f"<b><u><i>Next trade me plan ke sath recover kar lenge<b><u><i> 💪"
+    "💔 LOSS\n"
+    "<b><u>Relax bro</u></b> 😎\n"
+    "<b><u><i>Next trade me plan ke sath recover kar lenge</i></u></b> 💪"
                 )
 
         # ⚖ DOJI
@@ -236,6 +236,7 @@ if __name__ == "__main__":
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
     asyncio.run(main())
+
 
 
 
