@@ -63,18 +63,18 @@ async def handle_forward(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         direction = "🔴 DOWN 🔴"
 
             formatted_signal = (
-                f"🚀 𝗢𝗻𝗲 𝗠𝗶𝗻𝘂𝘁𝗲 𝗧𝗿𝗮𝗱𝗲 (𝟭 𝗠𝗜𝗡𝗧) 🚀\n\n"
-                f"🀄 {asset}\n"
-                f"⚡️ 𝐓𝐈𝐌𝐄 𝐙𝐎𝐍𝐄 𝐔𝐓𝐂 +𝟓:𝟑𝟎\n"
-                f"⌚ {time} ENTRY TIME\n"
-                f"{direction}\n\n"
+                f"🚀 <u>𝗢𝗻𝗲 𝗠𝗶𝗻𝘂𝘁𝗲 𝗧𝗿𝗮𝗱𝗲 (𝟭 𝗠𝗜𝗡𝗧)<u> 🚀\n\n"
+                f"🀄 <u>{asset}<u>\n"
+                f"⚡️ <u>𝐓𝐈𝐌𝐄 𝐙𝐎𝐍𝐄 𝐔𝐓𝐂 +𝟓:𝟑𝟎<u>\n"
+                f"⌚ {time} <u>ENTRY TIME<u>\n"
+                f"<u>{direction}<u>\n\n"
                 f"💎 𝗣𝗿𝗲𝗺𝗶𝘂𝗺 𝗦𝗶𝗴𝗻𝗮𝗹 💎\n"
                 f"━━━━━━━━━━━━━━━\n"
-                f"💎 OFFICIAL REGISTRATION LINK 👇\n"
-                f"👉 https://broker-qx.pro/sign-up/?lid=1200739\n\n"
-                f"🎁 USE CODE: Masterguru\n"
-                f"💥 GET INSTANT 50% BONUS ON FIRST DEPOSIT!\n"
-                f"(Valid only via this official link)\n"
+                f"💎 <u><b>OFFICIAL REGISTRATION LINK<u><b> 👇\n"
+                f"👉 <u>https://broker-qx.pro/sign-up/?lid=1200739<u>\n\n"
+                f"🎁 <u><b>USE CODE:<u><b> Masterguru\n"
+                f"💥 <u><b>GET INSTANT 50% BONUS ON FIRST DEPOSIT!<u><b>\n"
+                f"<i>(Valid only via this official link)<i>\n"
                 f"━━━━━━━━━━━━━━━"
             )
 
@@ -116,8 +116,8 @@ async def handle_forward(update: Update, context: ContextTypes.DEFAULT_TYPE):
             if "WIN ✅²" in text_upper:
                 final_caption = (
                     f"💔 LOSS\n"
-                    f"Relax bro 😎\n"
-                    f"Next trade me plan ke sath recover kar lenge 💪"
+                    f"<b><u>Relax bro<b><u> 😎\n"
+                    f"<b><u><i>Next trade me plan ke sath recover kar lenge<b><u><i> 💪"
                 )
 
             # Consecutive loss message
@@ -132,8 +132,8 @@ async def handle_forward(update: Update, context: ContextTypes.DEFAULT_TYPE):
             elif "LOSS" in text_upper or "💔 LOSS" in text_upper:
                 final_caption = (
                     f"💔 LOSS\n"
-                    f"Relax bro 😎\n"
-                    f"Next trade me plan ke sath recover kar lenge 💪"
+                    f"<b><u>Relax bro<b><u> 😎\n"
+                    f"<b><u><i>Next trade me plan ke sath recover kar lenge<b><u><i> 💪"
                 )
 
         # ⚖ DOJI
@@ -236,6 +236,7 @@ if __name__ == "__main__":
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
     asyncio.run(main())
+
 
 
 
