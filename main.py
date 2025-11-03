@@ -72,7 +72,7 @@ async def handle_forward(update: Update, context: ContextTypes.DEFAULT_TYPE):
     f"━━━━━━━━━━━━━━━\n"
     f"💎 <u><b>OFFICIAL REGISTRATION LINK</b></u> 👇\n"
     f"👉 <u>https://broker-qx.pro/sign-up/?lid=1200739</u>\n\n"
-    f"🎁 <u><b>USE CODE:</b></u> Masterguru\n"
+    f"🎁 <u><b>USE CODE:</b></u> <code>Masterguru</code>\n"
     f"💥 <u><b>GET INSTANT 50% BONUS ON FIRST DEPOSIT!</b></u>\n"
     f"<i>(Valid only via this official link)</i>\n"
     f"━━━━━━━━━━━━━━━"
@@ -236,6 +236,7 @@ if __name__ == "__main__":
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
     asyncio.run(main())
+
 
 
 
