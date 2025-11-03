@@ -116,8 +116,8 @@ async def handle_forward(update: Update, context: ContextTypes.DEFAULT_TYPE):
             if "WIN ✅²" in text_upper:
                 final_caption = (
                     f"💔 LOSS\n"
-                    f"Martingale couldn’t save this one 😔\n"
-                    f"Stay calm, strategy will bounce back stronger 💪"
+                    f"Relax bro 😎\n"
+                    f"Next trade me plan ke sath recover kar lenge 💪"
                 )
 
             # Consecutive loss message
@@ -236,5 +236,6 @@ if __name__ == "__main__":
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
     asyncio.run(main())
+
 
 
