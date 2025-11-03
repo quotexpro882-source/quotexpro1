@@ -96,43 +96,53 @@ async def handle_forward(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     try:
         result_msg = None
+        final_caption = None
 
         # ✅ MTG WIN
         if "WIN ✅¹" in text_upper or "MTG WIN" in text_upper:
             result_msg = "✅ MTG WIN"
+            final_caption = "✅ MTG WIN"
 
         # ✅ Normal WIN
         elif "WIN ✅" in text_upper and "¹" not in text_upper and "²" not in text_upper:
             result_msg = "✅ WIN"
+            final_caption = "✅ WIN"
 
         # 💔 LOSS or WIN ✅² → LOSS
         elif "WIN ✅²" in text_upper or "💔 LOSS" in text_upper or "LOSS" in text_upper:
             result_msg = "💔 LOSS"
 
-        # ⚖ DOJI
-        elif "DOJI" in text_upper or "⚖" in text_upper:
-            result_msg = "⚖ DOJI"
+            # Custom message for WIN ✅² treated as LOSS
+            if "WIN ✅²" in text_upper:
+                final_caption = (
+                    f"💔 LOSS\n"
+                    f"Martingale couldn’t save this one 😔\n"
+                    f"Stay calm, strategy will bounce back stronger 💪"
+                )
 
-        # ✅ Prepare message caption with variations
-        if result_msg:
-            caption_text = text_upper
-
-            # 🔄 If consecutive loss
-            if "LOSS" in caption_text and ("CONSEC" in caption_text or "2 LOSS" in caption_text):
+            # Consecutive loss message
+            elif "LOSS" in text_upper and ("CONSEC" in text_upper or "2 LOSS" in text_upper):
                 final_caption = (
                     f"💔 LOSS\n"
                     f"Don’t panic, bounce back stronger 💪\n"
                     f"One loss can’t stop a future winner🔥"
                 )
-            elif "LOSS" in caption_text:
+
+            # Normal loss message
+            elif "LOSS" in text_upper or "💔 LOSS" in text_upper:
                 final_caption = (
                     f"💔 LOSS\n"
                     f"Relax bro 😎\n"
                     f"Next trade me plan ke sath recover kar lenge 💪"
                 )
-            else:
-                final_caption = result_msg
 
+        # ⚖ DOJI
+        elif "DOJI" in text_upper or "⚖" in text_upper:
+            result_msg = "⚖ DOJI"
+            final_caption = "⚖ DOJI"
+
+        # ✅ Send final message if detected
+        if final_caption:
             await context.bot.send_message(
                 chat_id=TARGET_CHANNEL_ID,
                 text=f"<b>{final_caption}</b>",
@@ -142,7 +152,6 @@ async def handle_forward(update: Update, context: ContextTypes.DEFAULT_TYPE):
     except Exception as e:
         logger.warning(f"Result message parsing error: {e}")
         return
-
 
 # ===============================
 # 🌐 AIOHTTP HANDLERS
@@ -227,4 +236,5 @@ if __name__ == "__main__":
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
     asyncio.run(main())
+
 
