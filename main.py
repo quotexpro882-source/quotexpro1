@@ -94,16 +94,19 @@ async def copy_channel_post(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 return
 
         # ✅ WIN/LOSS message check
-        elif any(kw in text.upper() for kw in ["WIN ✅", "💔 LOSS", "DOJI ⚖", "DOJI", "MTG WIN"]):
+        elif any(kw in text.upper() for kw in ["WIN ✅", "💔 LOSS", "DOJI ⚖", "DOJI"]):
             try:
                 upper_text = text.upper()
 
-                if "WIN ✅" in upper_text and "MTG" not in upper_text:
-                    result_msg = "✅ WIN"
-                elif "MTG WIN" in upper_text:
+                # 🔁 Special conversion: WIN ✅¹ → ✅ MTG WIN
+                if "WIN ✅¹" in text or "WIN ✅¹" in upper_text:
                     result_msg = "✅ MTG WIN"
+                elif "WIN ✅" in upper_text and "¹" not in text:
+                    result_msg = "✅ WIN"
                 elif "LOSS" in upper_text:
                     result_msg = "💔 LOSS"
+                elif "MTG WIN" in upper_text:
+                    result_msg = "✅ MTG WIN"
                 else:
                     result_msg = "DOJI ⚖"
 
@@ -265,3 +268,4 @@ if __name__ == "__main__":
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
     asyncio.run(main())
+
