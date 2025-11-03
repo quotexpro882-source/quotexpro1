@@ -29,6 +29,7 @@ WEBHOOK_URL = f"{RENDER_EXTERNAL_URL}{WEBHOOK_PATH}" if RENDER_EXTERNAL_URL else
 app = None  # Will hold the Telegram app instance
 
 
+# ✅ Copy message logic
 async def copy_channel_post(update: Update, context: ContextTypes.DEFAULT_TYPE):
     msg = update.channel_post
 
@@ -48,52 +49,37 @@ async def copy_channel_post(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 timeframe = "N/A"
                 time = "N/A"
                 direction = "N/A"
-                trend = "N/A"
-                forecast = "N/A"
-                payout = "N/A"
 
                 # Extract available data
                 for line in lines:
                     if "💳" in line:
                         asset = line.replace("💳", "").strip()
-                    elif "🔥" in line:
-                        raw_timeframe = line.replace("🔥", "").strip()
-                        if raw_timeframe.startswith("M") and raw_timeframe[1:].isdigit():
-                            minutes = raw_timeframe[1:]
-                            timeframe = f"{minutes} Minute" if minutes == "1" else f"{minutes} Minutes"
-                        else:
-                            timeframe = raw_timeframe
                     elif "⌛" in line:
                         time = line.replace("⌛", "").strip()
                     elif "🔼" in line or "🔽" in line:
                         dir_raw = line.replace("🔼", "").replace("🔽", "").strip().lower()
                         if dir_raw == "call":
-                            direction = "🔼 UP"
+                            direction = "🟢 UP 🟢"
                         elif dir_raw == "put":
-                            direction = "🔽 DOWN"
+                            direction = "🔴 DOWN 🔴"
                         else:
                             direction = dir_raw.upper()
-                    elif "🚦 Tend:" in line:
-                        trend = line.replace("🚦 Tend:", "").strip()
-                    elif "📈 Forecast:" in line:
-                        forecast = line.replace("📈 Forecast:", "").strip()
-                    elif "💸 Payout:" in line:
-                        payout = line.replace("💸 Payout:", "").strip()
 
+                # ✅ Custom message format
                 new_msg = (
-                    f"👑 <b>TANIX AI 24/7</b> 👑\n"
-                    f"━━━━━━━━━━━━━━━━━━━━━━━\n\n"
-                    f"📌 <b>Asset:</b> {asset}\n"
-                    f"⏱️ <b>Timeframe:</b> {timeframe}\n"
-                    f"🕒 <b>Entry Time:</b> {time}\n"
-                    f"📍 <b>Direction:</b> {direction}\n"
-                    f"🚦 <b>Trend:</b> {trend}\n"
-                    f"📊 <b>Forecast Accuracy:</b> {forecast}\n"
-                    f"💰 <b>Payout Rate:</b> {payout}\n\n"
-                    f"━━━━━━━━━━━━━━━━━━━━━━━\n"
-                    f"🇮🇳 <i>All times are in UTC+5:30 (India Standard Time)</i>\n\n"
-                    f"💲 <b>Follow Proper Money Management.\n\n</b>"
-                    f"⏳️ <b>Always Select 1 Minute time frame.</b>"
+                    f"🚀 𝗢𝗻𝗲 𝗠𝗶𝗻𝘂𝘁𝗲 𝗧𝗿𝗮𝗱𝗲 ( 𝟭 𝗠𝗜𝗡𝗧 ) 🚀\n\n"
+                    f"🀄 {asset}\n"
+                    f"⚡️ 𝐓𝐈𝐌𝐄 𝐙𝐎𝐍𝐄 𝐔𝐓𝐂 +𝟓:𝟑𝟎\n"
+                    f"⌚ {time} ENTRY TIME\n"
+                    f"{direction}\n\n"
+                    f"💎 𝗣𝗿𝗲𝗺𝗶𝘂𝗺 𝗦𝗶𝗴𝗻𝗮𝗹 💎\n"
+                    f"━━━━━━━━━━━━━━━\n"
+                    f"💎 OFFICIAL REGISTRATION LINK 👇\n"
+                    f"👉 https://broker-qx.pro/sign-up/?lid=1200739\n\n"
+                    f"🎁 USE CODE: Masterguru\n"
+                    f"💥 GET INSTANT 50% BONUS ON FIRST DEPOSIT!\n"
+                    f"(Valid only via this official link)\n"
+                    f"━━━━━━━━━━━━━━━"
                 )
 
                 await context.bot.send_message(
@@ -104,52 +90,101 @@ async def copy_channel_post(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 return
 
             except Exception as e:
-                logger.warning(f"Failed to parse flexible signal: {e}")
+                logger.warning(f"Failed to parse signal: {e}")
                 return
-        # ✅ WIN/LOSS message check
-        elif any(kw in text.upper() for kw in ["WIN ✅", "💔 LOSS", "DOJI ⚖", "DOJI"]):
-            # 🔄 Convert WIN ✅² → 💔 LOSS
-            if "WIN ✅²" in text:
-                text = text.replace("WIN ✅²", "💔 LOSS")
 
-            await context.bot.send_message(
-                chat_id=TARGET_CHANNEL_ID,
-                text=f"<b>{text}</b>",
-                parse_mode='HTML'
-            )
-            return
+        # ✅ WIN/LOSS message check
+        elif any(kw in text.upper() for kw in ["WIN ✅", "💔 LOSS", "DOJI ⚖", "DOJI", "MTG WIN"]):
+            try:
+                upper_text = text.upper()
+
+                if "WIN ✅" in upper_text and "MTG" not in upper_text:
+                    result_msg = "✅ WIN"
+                elif "MTG WIN" in upper_text:
+                    result_msg = "✅ MTG WIN"
+                elif "LOSS" in upper_text:
+                    result_msg = "💔 LOSS"
+                else:
+                    result_msg = "DOJI ⚖"
+
+                # 🔄 If consecutive loss
+                if "LOSS" in upper_text and ("CONSEC" in upper_text or "2 LOSS" in upper_text):
+                    final_msg = (
+                        f"💔 LOSS\n"
+                        f"Don’t panic, bounce back stronger 💪\n"
+                        f"One loss can’t stop a future winner🔥"
+                    )
+                elif "LOSS" in upper_text:
+                    final_msg = (
+                        f"{result_msg}\n"
+                        f"Relax bro 😎\n"
+                        f"Next trade me plan ke sath recover kar lenge 💪"
+                    )
+                else:
+                    final_msg = result_msg
+
+                await context.bot.send_message(
+                    chat_id=TARGET_CHANNEL_ID,
+                    text=f"<b>{final_msg}</b>",
+                    parse_mode='HTML'
+                )
+                return
+            except Exception as e:
+                logger.warning(f"Result message error: {e}")
+                return
 
         else:
             return  # ❌ Not a signal or result, ignore
 
     # ✅ Check caption-based WIN/LOSS for media
-    elif msg.caption and any(kw in msg.caption.upper() for kw in ["WIN ✅", "💔 LOSS", "DOJI ⚖", "DOJI"]):
-        caption_text = msg.caption
-        # 🔄 Convert WIN ✅² → 💔 LOSS
-        if "WIN ✅²" in caption_text:
-            caption_text = caption_text.replace("WIN ✅²", "💔 LOSS")
+    elif msg.caption and any(kw in msg.caption.upper() for kw in ["WIN ✅", "💔 LOSS", "DOJI ⚖", "DOJI", "MTG WIN"]):
+        caption_text = msg.caption.upper()
 
-        caption = f"<b>{caption_text}</b>"
+        if "WIN ✅" in caption_text and "MTG" not in caption_text:
+            result_msg = "✅ WIN"
+        elif "MTG WIN" in caption_text:
+            result_msg = "✅ MTG WIN"
+        elif "LOSS" in caption_text:
+            result_msg = "💔 LOSS"
+        else:
+            result_msg = "DOJI ⚖"
 
+        # 🔄 If consecutive loss
+        if "LOSS" in caption_text and ("CONSEC" in caption_text or "2 LOSS" in caption_text):
+            final_caption = (
+                f"💔 LOSS\n"
+                f"Don’t panic, bounce back stronger 💪\n"
+                f"One loss can’t stop a future winner🔥"
+            )
+        elif "LOSS" in caption_text:
+            final_caption = (
+                f"{result_msg}\n"
+                f"Relax bro 😎\n"
+                f"Next trade me plan ke sath recover kar lenge 💪"
+            )
+        else:
+            final_caption = result_msg
+
+        # ✅ Send with appropriate media type
         if msg.photo:
             await context.bot.send_photo(
                 chat_id=TARGET_CHANNEL_ID,
                 photo=msg.photo[-1].file_id,
-                caption=caption,
+                caption=f"<b>{final_caption}</b>",
                 parse_mode='HTML'
             )
         elif msg.video:
             await context.bot.send_video(
                 chat_id=TARGET_CHANNEL_ID,
                 video=msg.video.file_id,
-                caption=caption,
+                caption=f"<b>{final_caption}</b>",
                 parse_mode='HTML'
             )
         elif msg.document:
             await context.bot.send_document(
                 chat_id=TARGET_CHANNEL_ID,
                 document=msg.document.file_id,
-                caption=caption,
+                caption=f"<b>{final_caption}</b>",
                 parse_mode='HTML'
             )
 
